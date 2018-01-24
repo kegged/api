@@ -20,7 +20,7 @@ app
   .disable('etag')
 
 app
-  .use(morgan( !PROD ? 'dev' : 'combined' ))
+  .use(morgan(!PROD ? 'dev' : 'combined'))
   .use(compression())
   .use(helmet())
   .use(jsonParser())
