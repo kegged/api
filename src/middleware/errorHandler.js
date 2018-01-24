@@ -3,7 +3,7 @@ export default (err, req, res, next) => {
   const message = err.message || 'Something broke ):'
   const body = { status, message, error: true }
 
-  const isServerError = status <= 500
+  const isServerError = status >= 500
 
   if (isServerError) console.error(err)
 
