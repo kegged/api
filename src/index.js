@@ -15,20 +15,27 @@ const PROD = NODE_ENV === 'production'
 
 const app = express()
 
+// disable headers
 app
   .disable('x-powered-by')
   .disable('etag')
 
+// mount vendor middleware
 app
   .use(morgan(!PROD ? 'dev' : 'combined'))
   .use(compression())
   .use(helmet())
   .use(jsonParser())
 
+// mount routers
 app.use('/', routers.mainRouter)
 app.use('/users', routers.userRouter)
 
 app.get('/secret', middleware.requireAuth, (req, res) => res.send(req.user))
+
+// mount error middleware
+app.use(middleware.notFound)
+app.use(middleware.errorHandler)
 
 app.listen(PORT || 3000)
 
