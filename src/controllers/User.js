@@ -3,8 +3,15 @@ import { generateHash } from '@/utils'
 
 export default class UserController {
 
-  static async findUserOr404(userName) {
-    const user = await models.User.findOne({ where: { userName } })
+  static publicAttributes = [
+    'id', 'userName', 'firstName', 'lastName', 'email'
+  ]
+
+  static async findUserOr404(userName, pub) {
+    const user = await models.User.findOne({
+      where: { userName },
+      attributes: pub ? UserController.publicAttributes : undefined,
+    })
     if (!user) {
       const err = new Error('user does not exist')
       err.status = 404
@@ -41,7 +48,7 @@ export default class UserController {
     const { firstName, lastName, email, passWord } = req.body
 
     if (req.user.userName !== userName && !req.user.isAdmin) {
-      // user is unauthorized
+      // user is unauthorized update
       const err = new Error('unauthorized')
       err.status = 401
       next(err)
@@ -51,34 +58,50 @@ export default class UserController {
     const { user, error } = await UserController.findUserOr404(userName)
     if (error) return next(error)
 
-    // update columns if needed
-    if (typeof req.body.userName !== 'undefined') {
-      user.userName = req.body.userName
-    }
+    const buffer = req.body
 
-    if (typeof firstName !== 'undefined') {
-      user.firstName = firstName
-    }
-
-    if (typeof lastName !== 'undefined') {
-      user.lastName = lastName
-    }
-
-    if (typeof email !== 'undefined') {
-      user.email = email
-    }
-
-    if (typeof passWord !== 'undefined') {
+    if (typeof buffer.passWord !== 'undefined') {
       const { salt, hash } = generateHash(passWord)
-      user.salt = salt
-      user.hash = hash
+      buffer.salt = salt
+      buffer.hash = hash
+      delete buffer.passWord
     }
 
     try {
-      await user.update()
+      await user.updateAttributes(buffer)
     } catch (e) { next(new Error('failed at update')) }
 
     res.status(200).json({ updatedUser: user })
+  }
+
+  static async deleteUser(req, res, next) {
+    const { userName } = req.params
+
+    if (req.user.userName !== userName && !req.user.isAdmin) {
+      // user is unauthorized to delete
+      const err = new Error('unauthorized')
+      err.status = 401
+      next(err)
+    }
+
+    const { user, error } = await UserController.findUserOr404(userName)
+    if (error) return next(error)
+
+    await models.User.destroy({ where: { userName } })
+
+    res.status(200).json({ deletedUser: user })
+  }
+
+  static async getUser(req, res, next) {
+    const { userName } = req.params
+
+    const { user, error } = await UserController.findUserOr404(userName, true)
+    return error ? next(error) : res.status(200).json(user)
+  }
+
+  static async getUsers(req, res, next) {
+    const users = await models.User.findAll({ attributes: UserController.publicAttributes })
+    res.status(200).send({ users })
   }
 
 }
