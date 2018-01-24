@@ -25,6 +25,7 @@ app
   .use(helmet())
   .use(jsonParser())
 
+app.use('/', routers.mainRouter)
 app.use('/users', routers.userRouter)
 
 app.get('/secret', middleware.requireAuth, (req, res) => res.send(req.user))

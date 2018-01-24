@@ -45,5 +45,11 @@ export default (sequelize, DataTypes) => {
     }, 'secret')
   }
 
+  User.prototype.checkPassword = async function(attempt) {
+    const { hash } = this
+    const isMatch = await bcrypt.compare(attempt, hash)
+    return isMatch
+  }
+
   return User
 }
