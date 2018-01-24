@@ -31,3 +31,5 @@ app.use('/users', routers.userRouter)
 app.get('/secret', middleware.requireAuth, (req, res) => res.send(req.user))
 
 app.listen(PORT || 3000)
+
+export default app

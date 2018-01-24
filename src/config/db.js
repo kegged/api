@@ -11,7 +11,7 @@ export default (() => {
   switch (NODE_ENV) {
     case 'test':
       console.log('test!')
-      return { dialect: 'sqlite', storage: ':memory:' }
+      return { dialect: 'sqlite', storage: ':memory:', logging: false }
     case 'development':
       console.log('development!')
       return { dialect: 'sqlite', storage: SQLITE_PATH }
