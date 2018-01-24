@@ -5,8 +5,13 @@ import { UserController } from '@/controllers'
 
 const router = Router()
 
-router.post('/', UserController.createUser)
+router.route('/')
+  .get(UserController.getUsers)
+  .post(UserController.createUser)
 
-router.put('/:userName', requireAuth, UserController.updateUser)
+router.route('/:userName')
+  .get(UserController.getUser)
+  .put(requireAuth, UserController.updateUser)
+  .delete(requireAuth, UserController.deleteUser)
 
 export default router
