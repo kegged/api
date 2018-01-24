@@ -1,28 +1,24 @@
-import joi from 'joi'
-
 import models from '@/models'
 import { generateHash } from '@/utils'
 
 export default class UserController {
 
-  static userBufferSchema = joi.object().keys({
-    userName: joi.string().alphanum().min(3).max(30),
-    passWord: joi.string().min(8).max(20),
-    email: joi.string().email(),
-    firstName: joi.string().min(2).max(50),
-    lastName: joi.string().min(2).max(50),
-  })
-
   static async createUser(req, res, next) {
-    // const result = joi.validate(req.body, UserController.userBufferSchema.required())
-    // failed validation send throw bad request
-    // if (!result.error) return next(result.error)
+    const { userName, firstName, lastName, email, passWord } = req.body
+
+    const fields = { userName, firstName, lastName, email, passWord }
+    if (!Object.values(fields).every(val => typeof val !== 'undefined')) {
+      // all fields are required; throw bad request
+      const err = new Error('Bad request')
+      err.status = 400
+      return next(err)
+    }
   
-    const { hash, salt } = await generateHash(req.body.passWord)
-    delete req.body.passWord
+    const { hash, salt } = await generateHash(passWord)
+    delete fields.passWord
   
     const newUser = await models.User.create({
-      ...req.body, hash, salt
+      ...fields, hash, salt
     })
   
     const token = await newUser.generateToken()
