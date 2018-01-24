@@ -11,7 +11,5 @@ export default (err, req, res, next) => {
     return res.status(status).json({ ...body, stack: err.stack })
   }
 
-  res.send(status).json(body)
-  
-  res.status(status)
+  res.status(status).json(body)
 }
