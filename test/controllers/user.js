@@ -1,10 +1,6 @@
-import chai, { expect } from 'chai'
-import request from 'supertest'
-
-chai.use(require('chai-shallow-deep-equal'))
-
-import app from '@'
 import { UserController } from '@/controllers'
+
+const { omitUserPassWord } = helpers
 
 const userBuffer1 = {
   email: 'charlesc.kenney@gmail.com',
@@ -34,7 +30,7 @@ function omitPassword(userBuffer) {
   const cp = { ...userBuffer }
   delete cp.passWord
   return cp
-} 
+}
 
 describe('POST /users', () => {
   it('should create a user and respond with {newUser, token} and status 201', done => {
@@ -45,7 +41,7 @@ describe('POST /users', () => {
       .expect(201)
       .end((err, res) => {
         if (err) return done(err)
-        expect(res.body.newUser).to.shallowDeepEqual(omitPassword(userBuffer1))
+        expect(res.body.newUser).to.shallowDeepEqual(omitUserPassWord(userBuffer1))
         expect(res.body.hasOwnProperty('token'), true)
         done()
       })
@@ -71,7 +67,7 @@ describe('POST /users', () => {
       .expect(201)
       .end((err, res) => {
         if (err) return done(err)
-        expect(res.body.newUser).to.shallowDeepEqual(omitPassword(userBuffer3))
+        expect(res.body.newUser).to.shallowDeepEqual(omitUserPassWord(userBuffer3))
         expect(res.body.hasOwnProperty('token'), true)
         done()
       })
@@ -85,7 +81,7 @@ describe('GET /users', () => {
       .expect(200)
       .end((err, res) => {
         if (err) return done(err)
-        expect(res.body.users).to.shallowDeepEqual(validUsers.map(u => omitPassword(u)))
+        expect(res.body.users).to.shallowDeepEqual(validUsers.map(u => omitUserPassWord(u)))
         done()
       })
   })
@@ -93,4 +89,7 @@ describe('GET /users', () => {
 
 describe('PUT /users/:userName', () => {
   it('should fail because user is not an admin or current user')
+
+  it('should allow user to change profile')
 })
+
