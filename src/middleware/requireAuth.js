@@ -1,15 +1,18 @@
 import jwt from 'jsonwebtoken'
 
 export default async (req, res, next) => {
-  const token = req.get('Authorization').split('Bearer').pop().trim()
-  const payload = jwt.verify(token, 'secret')
-  // token was invalid; throw unauthorized
-  if (!Object.keys(payload).length) {
-    const err = new Error('Unauthorized')
+  let payload
+  try {
+    const token = req.get('Authorization').split('Bearer').pop().trim()
+    payload = jwt.verify(token, 'secret')
+    // the token was invalid; throw error
+    if (!Object.keys(payload).length) throw Error()
+  } catch (e) {
+    const err = new Error('unauthorizaed')
     err.status = 401
     return next(err)
   }
-  // mount payload to request object
+  // mount user to req
   req.user = payload
   next()
 }
