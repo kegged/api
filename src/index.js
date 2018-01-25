@@ -12,6 +12,7 @@ import * as middleware from './middleware'
 
 const { NODE_ENV, PORT } = process.env
 const PROD = NODE_ENV === 'production'
+const TEST = NODE_ENV === 'test'
 
 const app = express()
 
@@ -22,10 +23,14 @@ app
 
 // mount vendor middleware
 app
-  .use(morgan(!PROD ? 'dev' : 'combined'))
   .use(compression())
   .use(helmet())
   .use(jsonParser())
+
+if (!TEST) {
+  // disable logger durring tests
+  app.use(morgan(!PROD ? 'dev' : 'combined'))
+}
 
 // mount routers
 app.use('/', routers.mainRouter)
