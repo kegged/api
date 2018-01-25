@@ -26,7 +26,7 @@ const users = [
 
 const tokens = []
 
-const validUsers = [users[0], users[2]]
+const validUsers = [global.admin, users[0], users[2]]
 
 describe('POST /users', () => {
   it('should create a user and respond with {newUser, token} and status 201', done => {
