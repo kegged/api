@@ -28,12 +28,6 @@ const tokens = []
 
 const validUsers = [users[0], users[2]]
 
-function omitPassword(userBuffer) {
-  const cp = { ...userBuffer }
-  delete cp.passWord
-  return cp
-}
-
 describe('POST /users', () => {
   it('should create a user and respond with {newUser, token} and status 201', done => {
     request(app)
