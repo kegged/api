@@ -15,11 +15,12 @@ export default { ...(() => {
       return { dialect: 'sqlite', storage: SQLITE_PATH }
     case 'production':
       return {
-        username: DB_USER,
-        password: DB_PASS,
-        database: DB_NAME,
+        username: 'root',
+        port: 3306,
+        password: DB_PASS || '',
+        database: DB_NAME || 'kegged_local',
         dialect: 'mysql',
-        host: DB_HOST,
+        host: DB_HOST || 'localhost',
       }
   }
 })(), operatorsAliases: false}

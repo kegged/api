@@ -5,14 +5,11 @@ export default (sequelize, DataTypes) => {
       unique: true,
       allowNull: false,
     }
-  }, {
-    tableName: 'city',
-    classMethods: {
-      associate(models) {
-        City.hasMany(models.Brewery)
-      }
-    },
   })
+
+  City.associate = models => {
+    City.hasMany(models.Brewery)
+  }
   
   return City
 }
