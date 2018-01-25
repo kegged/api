@@ -8,7 +8,10 @@ export default (sequelize, DataTypes) => {
   })
 
   City.associate = models => {
-    City.hasMany(models.Brewery)
+    City.hasMany(models.Brewery, {
+      foreignKey: 'cityId',
+      as: 'breweries',
+    })
   }
   
   return City

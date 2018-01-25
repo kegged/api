@@ -14,6 +14,10 @@ export default (sequelize, DataTypes) => {
   })
 
   Brew.associate = models => {
+    Brew.belongsTo(models.Brewery, {
+      foreignKey: 'breweryId',
+      as: 'brewery',
+    })
     Brew.hasMany(models.BrewTag)
   }
 

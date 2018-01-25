@@ -22,10 +22,22 @@ export default (sequelize, DataTypes) => {
   })
 
   Brewery.associate = models => {
-    Brewery.hasMany(models.Brew)
-    Brewery.hasMany(models.BreweryTag)
-    Brewery.hasMany(models.Post)
-    Brewery.belongsTo(models.City)
+    Brewery.hasMany(models.Brew, {
+      foreignKey: 'breweryId',
+      as: 'brews',
+    })
+    Brewery.hasMany(models.BreweryTag, {
+      foreignKey: 'breweryId',
+      as: 'tags',
+    })
+    Brewery.hasMany(models.Post, {
+      foreignKey: 'breweryId',
+      as: 'posts',
+    })
+    Brewery.belongsTo(models.City, {
+      foreignKey: 'cityId',
+      as: 'city',
+    })
   }
 
   return Brewery

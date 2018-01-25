@@ -3,19 +3,33 @@ import models from '@/models'
 export default class BreweryController {
 
   static async getBreweries(req, res, next) {
-    console.log('params => ', req.params)
-    const city = await models.City.findOne({
-      where: { name: 'Raleigh' },
-      include: [ { model: models.Brewery } ],
+    const { include } = req.query
+    const breweries = await models.Brewery.findAll({
+      include: [
+        { model: models.City, as: 'city' },
+        { model: models.Post, as: 'posts' },
+        { model: models.Brew, as: 'brews' },
+        { model: models.BreweryTag, as: 'tags' }
+      ],
     })
 
-    if (!city) {
-      const err = new Error()
-      err.status = 404
-      return next(err)
-    }
-
-    res.status(200).json(city)
+    res.status(200).json(breweries)
   }
+
+  static async createBrewery(req, res, next) {
+  
+  }
+
+  // static async getBreweriesInCity(req, res, next) {
+  //   const city = await models.City.findOne({
+  //     where: req
+  //   })
+  // }
+
+  // static async getBreweryInCity(req, res, next) {
+  //   const city = await models.City.findOne({
+  //     where: 
+  //   })
+  // }
 
 }

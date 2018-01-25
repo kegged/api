@@ -34,6 +34,7 @@ if (!TEST) {
 
 // mount routers
 app.use('/', routers.mainRouter)
+app.use('/breweries', routers.breweryRouter)
 app.use('/cities', routers.cityRouter)
 app.use('/users', routers.userRouter)
 
