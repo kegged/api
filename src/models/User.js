@@ -33,6 +33,14 @@ export default (sequelize, DataTypes) => {
       type: DataTypes.BOOLEAN,
       default: false,
     }
+  }, {
+    classMethods: {
+      associate(models) {
+        User.hasMany(models.Post)
+        User.hasMany(models.Comment)
+      }
+    },
+    tableName: 'city'
   })
 
   User.prototype.generateToken = async function() {
