@@ -51,7 +51,7 @@ export default class UserController {
       // user is unauthorized update
       const err = new Error('unauthorized')
       err.status = 401
-      next(err)
+      return next(err)
     }
 
     // find user
@@ -96,7 +96,7 @@ export default class UserController {
     const { userName } = req.params
 
     const { user, error } = await UserController.findUserOr404(userName, true)
-    return error ? next(error) : res.status(200).json(user)
+    return error ? next(error) : res.status(200).json({ user })
   }
 
   static async getUsers(req, res, next) {

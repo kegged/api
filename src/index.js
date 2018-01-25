@@ -38,3 +38,5 @@ app.use(middleware.notFound)
 app.use(middleware.errorHandler)
 
 app.listen(PORT || 3000)
+
+export default app
