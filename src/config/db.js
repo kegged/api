@@ -10,13 +10,10 @@ export default (() => {
   
   switch (NODE_ENV) {
     case 'test':
-      console.log('test!')
       return { dialect: 'sqlite', storage: ':memory:', logging: false }
     case 'development':
-      console.log('development!')
       return { dialect: 'sqlite', storage: SQLITE_PATH }
     case 'production':
-      console.log('production')
       return {
         username: DB_USER,
         password: DB_PASS,
