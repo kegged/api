@@ -1,4 +1,4 @@
-export default (() => {
+export default { ...(() => {
   const {
     DB_USER,
     DB_PASS,
@@ -22,4 +22,4 @@ export default (() => {
         host: DB_HOST,
       }
   }
-})()
+})(), operatorsAliases: false}
