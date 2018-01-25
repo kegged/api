@@ -33,6 +33,8 @@ export default (sequelize, DataTypes) => {
       type: DataTypes.BOOLEAN,
       default: false,
     }
+  }, {
+    tableName: 'city'
   })
 
   User.prototype.generateToken = async function() {

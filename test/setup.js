@@ -17,6 +17,7 @@ import * as helpers from '~/helpers'
     salt,
     hash
   })
+  global.adminToken = await admin.generateToken()
 })()
 
 // setup globals
