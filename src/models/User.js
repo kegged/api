@@ -34,6 +34,12 @@ export default (sequelize, DataTypes) => {
       default: false,
     }
   }, {
+    classMethods: {
+      associate(models) {
+        User.hasMany(models.Post)
+        User.hasMany(models.Comment)
+      }
+    },
     tableName: 'city'
   })
 

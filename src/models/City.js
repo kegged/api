@@ -6,7 +6,12 @@ export default (sequelize, DataTypes) => {
       allowNull: false,
     }
   }, {
-    tableName: 'city'
+    tableName: 'city',
+    classMethods: {
+      associate(models) {
+        City.hasMany(models.Brewery)
+      }
+    },
   })
   
   return City
