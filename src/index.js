@@ -34,6 +34,7 @@ if (!TEST) {
 
 // mount routers
 app.use('/', routers.mainRouter)
+app.use('/cities', routers.cityRouter)
 app.use('/users', routers.userRouter)
 
 app.get('/secret', middleware.requireAuth, (req, res) => res.send(req.user))

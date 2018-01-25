@@ -5,9 +5,13 @@ export default (sequelize, DataTypes) => {
       unique: true,
       allowNull: false,
     }
-  }, {
-    tableName: 'tag'
   })
+
+  Tag.assoicate = models => {
+    Tag.belongsToMany(models.PostTag)
+    Tag.belongsToMany(models.BrewTag)
+    Tag.belongsToMany(models.BreweryTag)
+  }
 
   return Tag
 }
