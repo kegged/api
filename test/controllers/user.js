@@ -2,31 +2,31 @@ import { UserController } from '@/controllers'
 
 const { omitUserPassWord } = helpers
 
-const userBuffer1 = {
-  email: 'charlesc.kenney@gmail.com',
-  userName: 'charles',
-  passWord: 'password',
-  firstName: 'Charles',
-  lastName: 'Kenney',
-}
-
-const userBuffer2 = {
-  email: 'email@gmail.com',
-  firstName: 'Not Charles',
-  lastName: 'Not Kenney',
-}
-
-const userBuffer3 = {
-  email: 'copfoej@gmail.com',
-  userName: 'crgwjopwejf',
-  passWord: 'efiheifhie',
-  firstName: 'ejfojeof',
-  lastName: 'ekfjowjefo',
-}
+const users = [
+  {
+    email: 'charlesc.kenney@gmail.com',
+    userName: 'charles',
+    passWord: 'password',
+    firstName: 'Charles',
+    lastName: 'Kenney',
+  },
+  {
+    email: 'email@gmail.com',
+    firstName: 'Not Charles',
+    lastName: 'Not Kenney',
+  },
+  {
+    email: 'copfoej@gmail.com',
+    userName: 'crgwjopwejf',
+    passWord: 'efiheifhie',
+    firstName: 'ejfojeof',
+    lastName: 'ekfjowjefo',
+  }
+]
 
 const tokens = []
 
-const validUsers = [userBuffer1, userBuffer3]
+const validUsers = [users[0], users[2]]
 
 function omitPassword(userBuffer) {
   const cp = { ...userBuffer }
@@ -39,11 +39,11 @@ describe('POST /users', () => {
     request(app)
       .post('/users')
       .type('json')
-      .send(JSON.stringify(userBuffer1).trim())
+      .send(JSON.stringify(users[0]).trim())
       .expect(201)
       .end((err, res) => {
         if (err) return done(err)
-        expect(res.body.newUser).to.shallowDeepEqual(omitUserPassWord(userBuffer1))
+        expect(res.body.newUser).to.shallowDeepEqual(omitUserPassWord(users[0]))
         expect(res.body.hasOwnProperty('token'), true)
         tokens[1] = `Bearer ${res.body.token}`
         done()
@@ -54,7 +54,7 @@ describe('POST /users', () => {
     request(app)
       .post('/users')
       .type('json')
-      .send(JSON.stringify(userBuffer2).trim())
+      .send(JSON.stringify(users[1]).trim())
       .expect(400)
       .end((err, res) => {
         if (err) return done(err)
@@ -66,11 +66,11 @@ describe('POST /users', () => {
     request(app)
       .post('/users')
       .type('json')
-      .send(JSON.stringify({ ...userBuffer3, foo: 'bar' }).trim())
+      .send(JSON.stringify({ ...users[2], foo: 'bar' }).trim())
       .expect(201)
       .end((err, res) => {
         if (err) return done(err)
-        expect(res.body.newUser).to.shallowDeepEqual(omitUserPassWord(userBuffer3))
+        expect(res.body.newUser).to.shallowDeepEqual(omitUserPassWord(users[2]))
         expect(res.body.hasOwnProperty('token'), true)
         tokens[3] = `Bearer ${res.body.token}`
         done()
@@ -94,9 +94,9 @@ describe('GET /users', () => {
 describe('PUT /users/:userName', () => {
   it('should fail because user is not an admin or current user', done => {
     request(app)
-      .put(`/users/${userBuffer1.userName}`)
+      .put(`/users/${users[0].userName}`)
       .set('Authorization', tokens[3])
-      .send({ userName: userBuffer1.userName, passWord: userBuffer1.passWord })
+      .send({ userName: users[0].userName, passWord: users[0].passWord })
       .expect(401)
       .end((err, res) => {
         if (err) return done(err)
@@ -106,13 +106,13 @@ describe('PUT /users/:userName', () => {
 
   it('should allow user to change profile', done => {
     request(app)
-      .put(`/users/${userBuffer3.userName}`)
+      .put(`/users/${users[2].userName}`)
       .set('Authorization', tokens[3])
       .send({ userName: 'foo' })
       .expect(200)
       .end((err, res) => {
         if (err) return done(err)
-        expect(res.body.updatedUser).to.shallowDeepEqual({ ...omitUserPassWord(userBuffer3), userName: 'foo' })
+        expect(res.body.updatedUser).to.shallowDeepEqual({ ...omitUserPassWord(users[2]), userName: 'foo' })
         done()
       })
   })
@@ -121,11 +121,11 @@ describe('PUT /users/:userName', () => {
 describe('GET /users/:userName', () => {
   it('should allow user to see profile', done => {
     request(app)
-      .get(`/users/${userBuffer1.userName}`)
+      .get(`/users/${users[0].userName}`)
       .expect(200)
       .end((err, res) => {
         if (err) return done(err)
-        expect(res.body.user).to.shallowDeepEqual(omitUserPassWord(userBuffer1))
+        expect(res.body.user).to.shallowDeepEqual(omitUserPassWord(users[0]))
         done()
       })
   })
@@ -144,12 +144,12 @@ describe('DELETE /users/:userName', () => {
 
   it('should allow user to delete', done => {
     request(app)
-      .delete(`/users/${userBuffer1.userName}`)
+      .delete(`/users/${users[0].userName}`)
       .set('Authorization', tokens[1])
       .expect(200)
       .end((err, res) => {
         if (err) return done(err)
-        expect(res.body.deletedUser).to.shallowDeepEqual(omitUserPassWord(userBuffer1))
+        expect(res.body.deletedUser).to.shallowDeepEqual(omitUserPassWord(users[0]))
         done()
       })
   })
