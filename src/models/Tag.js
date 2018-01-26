@@ -7,6 +7,10 @@ export default (sequelize, DataTypes) => {
     }
   })
 
+  Tag.defaultScope = {
+    include: [ { all: true } ]
+  }
+
   Tag.associate = models => {
     Tag.hasMany(models.PostTag, {
       foreignKey: 'tagId'

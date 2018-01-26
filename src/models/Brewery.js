@@ -11,6 +11,10 @@ export default (sequelize, DataTypes) => {
     websiteUrl: {
       type: DataTypes.STRING,
       allowNull: false,
+    },
+    logoUrl: {
+      type: DataTypes.STRING,
+      allowNull: false,
     }
   }, {
     indexes: [
@@ -20,6 +24,10 @@ export default (sequelize, DataTypes) => {
       }
     ],
   })
+
+  Brewery.defaultScope = {
+    include: [ { all: true } ]
+  }
 
   Brewery.associate = models => {
     Brewery.hasMany(models.Brew, {

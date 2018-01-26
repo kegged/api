@@ -8,6 +8,10 @@ export default (sequelize, DataTypes) => {
     ]
   })
 
+  PostTag.defaultScope = {
+    include: [ { all: true } ]
+  }
+
   PostTag.associate = models => {
     PostTag.belongsTo(models.Post, {
       foreignKey: 'postId',

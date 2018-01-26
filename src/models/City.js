@@ -7,6 +7,10 @@ export default (sequelize, DataTypes) => {
     }
   })
 
+  City.defaultScope = {
+    include: [ { all: true } ]
+  }
+
   City.associate = models => {
     City.hasMany(models.Brewery, {
       foreignKey: 'cityId',

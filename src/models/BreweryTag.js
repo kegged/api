@@ -8,6 +8,10 @@ export default (sequelize, DataTypes) => {
     ],
   })
 
+  BreweryTag.defaultScope = {
+    include: [ { all: true } ]
+  }
+
   BreweryTag.associate = models => {
     BreweryTag.belongsTo(models.Brewery, {
       foreignKey: 'breweryId',
