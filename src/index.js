@@ -42,6 +42,7 @@ app.get('/secret', middleware.requireAuth, (req, res) => res.send(req.user))
 
 // mount error middleware
 app.use(middleware.notFound)
+app.use(middleware.errorWrapper)
 app.use(middleware.errorHandler)
 
 export const server = app.listen(PORT || 3000)

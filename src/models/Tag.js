@@ -6,6 +6,18 @@ export default (sequelize, DataTypes) => {
       allowNull: false,
     }
   })
+
+  Tag.associate = models => {
+    Tag.hasMany(models.PostTag, {
+      foreignKey: 'tagId'
+    })
+    Tag.hasMany(models.BrewTag, {
+      foreignKey: 'tagId'
+    })
+    Tag.hasMany(models.BreweryTag, {
+      foreignKey: 'tagId'
+    })
+  }
   
   return Tag
 }

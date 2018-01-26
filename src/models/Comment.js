@@ -6,9 +6,18 @@ export default (sequelize, DataTypes) => {
     },
   })
 
-  // Comment.associate = models => {
-  //   Comment.hasOne(models.User)
-  // }
+  Comment.associate = models => {
+    Comment.belongsTo(models.User, {
+      foreignKey: 'userId',
+      as: 'user',
+      allowNull: false,
+    })
+    Comment.belongsTo(models.Post, {
+      foreignKey: 'postId',
+      as: 'post',
+      allowNull: false,
+    })
+  }
 
   return Comment
 }

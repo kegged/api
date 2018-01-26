@@ -9,8 +9,14 @@ export default (sequelize, DataTypes) => {
   })
 
   BrewTag.associate = models => {
-    BrewTag.hasOne(models.Tag)
-    // BrewTag.hasOne(models.Brew)
+    BrewTag.belongsTo(models.Tag, {
+      foreignKey: 'tagId',
+      as: 'tag',
+    })
+    BrewTag.belongsTo(models.Brew, {
+      foreignKey: 'brewId',
+      as: 'brew',
+    })
   }
 
   return BrewTag

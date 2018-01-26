@@ -13,7 +13,10 @@ export default (sequelize, DataTypes) => {
       foreignKey: 'breweryId',
       as: 'brewery',
     })
-    // BreweryTag.hasOne(models.Tag)
+    BreweryTag.belongsTo(models.Tag, {
+      foreignKey: 'tagId',
+      as: 'tag',
+    })
   }
 
   return BreweryTag

@@ -9,8 +9,14 @@ export default (sequelize, DataTypes) => {
   })
 
   PostTag.associate = models => {
-    // PostTag.hasOne(models.Post)
-    PostTag.hasOne(models.Tag)
+    PostTag.belongsTo(models.Post, {
+      foreignKey: 'postId',
+      as: 'post',
+    })
+    PostTag.belongsTo(models.Tag, {
+      foreignKey: 'tagId',
+      as: 'tag',
+    })
   }
 
   return PostTag

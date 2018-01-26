@@ -36,8 +36,14 @@ export default (sequelize, DataTypes) => {
   })
 
   User.associate = models => {
-    User.hasMany(models.Post)
-    User.hasMany(models.Comment)
+    User.hasMany(models.Post, {
+      foreignKey: 'userId',
+      as: 'posts',
+    })
+    User.hasMany(models.Comment, {
+      foreignKey: 'userId',
+      as: 'comments',
+    })
   }
 
   User.prototype.generateToken = async function() {

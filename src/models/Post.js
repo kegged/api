@@ -11,11 +11,18 @@ export default (sequelize, DataTypes) => {
   })
 
   Post.associate = models => {
-    Post.hasMany(models.PostTag)
-    Post.hasMany(models.Comment)
+    Post.hasMany(models.PostTag, {
+      foreignKey: 'postId',
+      as: 'tags',
+    })
+    Post.hasMany(models.Comment, {
+      foreignKey: 'postId',
+      as: 'comments',
+    })
     Post.belongsTo(models.Brewery, {
       foreignKey: 'breweryId',
       as: 'brewery',
+      allowNull: true,
     })
   }
 

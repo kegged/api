@@ -10,6 +10,10 @@ export default class UserController {
   static async findUserOr404(userName, pub) {
     const user = await models.User.findOne({
       where: { userName },
+      include: [
+        { model: models.Post, as: 'posts' },
+        { model: models.Comment, as: 'comments' },
+      ],
       attributes: pub ? UserController.publicAttributes : undefined,
     })
     if (!user) {
@@ -34,13 +38,17 @@ export default class UserController {
     const { hash, salt } = await generateHash(passWord)
     delete fields.passWord
   
-    const newUser = await models.User.create({
-      ...fields, hash, salt
-    })
+    try {
+      const newUser = await models.User.create({
+        ...fields, hash, salt
+      })
+
+      const token = await newUser.generateToken()
   
-    const token = await newUser.generateToken()
-  
-    res.status(201).json({ newUser, token })
+      res.status(201).json({ newUser, token })
+    } catch (err) {
+      return next(err)
+    }
   }
 
   static async updateUser(req, res, next) {

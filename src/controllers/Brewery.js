@@ -9,7 +9,9 @@ export default class BreweryController {
         { model: models.City, as: 'city' },
         { model: models.Post, as: 'posts' },
         { model: models.Brew, as: 'brews' },
-        { model: models.BreweryTag, as: 'tags' }
+        { model: models.BreweryTag, as: 'tags', include: [
+          { model: models.Tag, as: 'tag' }
+        ] }
       ],
     })
 

@@ -18,7 +18,10 @@ export default (sequelize, DataTypes) => {
       foreignKey: 'breweryId',
       as: 'brewery',
     })
-    Brew.hasMany(models.BrewTag)
+    Brew.hasMany(models.BrewTag, {
+      foreignKey: 'brewId',
+      as: 'tags',
+    })
   }
 
   return Brew
