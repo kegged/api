@@ -1,4 +1,5 @@
 import models from '@/models'
+import * as errors from '@/errors'
 import { generateHash } from '@/utils'
 
 export default class UserController {
@@ -17,9 +18,7 @@ export default class UserController {
       attributes: pub ? UserController.publicAttributes : undefined,
     })
     if (!user) {
-      const err = new Error('user does not exist')
-      err.status = 404
-      return { user: null, error: err }
+      return { user: null, error: new errors.UnauthorizedError() }
     }
     return { user }
   }
