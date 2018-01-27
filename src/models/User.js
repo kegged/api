@@ -31,7 +31,8 @@ export default (sequelize, DataTypes) => {
     },
     isAdmin: {
       type: DataTypes.BOOLEAN,
-      default: false,
+      defaultValue: false,
+      allowNull: false,
     }
   })
 
@@ -44,10 +45,6 @@ export default (sequelize, DataTypes) => {
       foreignKey: 'userId',
       as: 'comments',
     })
-  }
-
-  User.defaultScope = {
-    include: [{ all: true }]
   }
 
   User.prototype.generateToken = async function() {

@@ -7,7 +7,7 @@ export default (err, req, res, next) => {
   // wrap sequelize errors
   if (err instanceof sequelizeErrors.BaseError) {
     if (err instanceof sequelizeErrors.UniqueConstraintError) {
-      $err = errors.UniqueConstraintError(err.fields[0] || 'field')
+      $err = new errors.UniqueConstraintError(err.fields[0] || 'field')
     }
   // wrap joi errors
   } else if (err.isJoi) {

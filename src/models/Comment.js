@@ -6,10 +6,6 @@ export default (sequelize, DataTypes) => {
     },
   })
 
-  Comment.defaultScope = {
-    include: [ { all: true } ]
-  }
-
   Comment.associate = models => {
     Comment.belongsTo(models.User, {
       foreignKey: 'userId',

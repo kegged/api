@@ -8,7 +8,6 @@ export default class AuthController {
 
     // resolve user by userName
     const user = await models.User.findOne({ where: { userName } })
-    console.log('user =>', user)
     if (!user) return next(new errors.ModelNotFoundError('user'))
 
     const isMatch = await user.checkPassword(passWord)

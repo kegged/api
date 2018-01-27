@@ -10,9 +10,6 @@ export default (sequelize, DataTypes) => {
     },
   })
 
-  Post.defaultScope = {
-    include: [ { all: true } ]
-  }
 
   Post.associate = models => {
     Post.hasMany(models.PostTag, {
