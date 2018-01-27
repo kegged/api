@@ -3,6 +3,9 @@ export default (sequelize, DataTypes) => {
     name: {
       type: DataTypes.STRING,
       allowNull: false,
+    },
+    photoUrl: {
+      type: DataTypes.STRING,
     }
   }, {
     indexes: [

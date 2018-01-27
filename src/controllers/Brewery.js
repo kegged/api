@@ -88,10 +88,12 @@ export default class BreweryController {
           where: { breweryId: brewery.id, tagId: tag.id }
         })
 
-        tags.push({ ...breweryTag, tag })
+        tags.push({ ...breweryTag.dataValues, tag: tag.dataValues })
       }
 
-      res.status(201).send({ newBrewery: brewery })
+      res.status(201).send({
+        newBrewery: { ...brewery.dataValues, tags, city }
+      })
 
     } catch (err) { return next(err) }
   }

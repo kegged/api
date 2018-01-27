@@ -33,19 +33,22 @@ if (!TEST) {
 }
 
 // mount routers
-app.use('/', routers.mainRouter)
-app.use('/comments', routers.commentRouter)
-app.use('/posts', routers.postRouter)
-app.use('/breweries', routers.breweryRouter)
-app.use('/cities', routers.cityRouter)
-app.use('/users', routers.userRouter)
+app
+  .use('/', routers.mainRouter)
+  .use('/brews', routers.brewRouter)
+  .use('/comments', routers.commentRouter)
+  .use('/posts', routers.postRouter)
+  .use('/breweries', routers.breweryRouter)
+  .use('/cities', routers.cityRouter)
+  .use('/users', routers.userRouter)
 
 app.get('/secret', middleware.requireAuth, (req, res) => res.send(req.user))
 
 // mount error middleware
-app.use(middleware.notFound)
-app.use(middleware.errorWrapper)
-app.use(middleware.errorHandler)
+app
+  .use(middleware.notFound)
+  .use(middleware.errorWrapper)
+  .use(middleware.errorHandler)
 
 export const server = app.listen(PORT || 3000)
 
