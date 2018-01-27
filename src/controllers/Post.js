@@ -18,6 +18,22 @@ export default class PostController {
     breweryId: joi.number(),
   })
 
+  static singlePostEagerGraph = [
+    { model: models.Brewery, as: 'brewery' },
+    { model: models.PostTag, as: 'tags', include: [
+      { model: models.Tag, as: 'tag' }
+    ] },
+    { model: models.User, as: 'user', fields: [
+      // TODO: mk models.User.$publicScope
+      'userName', 'firstName', 'lastName', 'email', 'id'
+    ] },
+    { model: models.Comment, as: 'comments', include: [
+      { model: models.User, as: 'user', fields: [
+        'userName', 'firstName', 'lastName', 'email', 'id'
+      ] }
+    ] }
+  ]
+
   static async getPosts(req, res) {
     const posts = await models.Post.findAll({
       include: [
@@ -32,7 +48,10 @@ export default class PostController {
   static async getPost(req, res) {
     const { id, title } = req.params
 
-    const post = await models.Post.findOne({ where: { id, title } })
+    const post = await models.Post.findOne({
+      where: { id, title },
+      include: PostController.singlePostEagerGraph,
+    })
     if (!post) return next(new errors.ModelNotFoundError('Post'))
 
     res.status(200).json({ post })

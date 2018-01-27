@@ -67,8 +67,6 @@ export default class UserController {
 
     const { body } = req
 
-    console.log(body)
-
     if (typeof body.passWord !== 'undefined') {
       const { salt, hash } = await generateHash(passWord)
       body.salt = salt

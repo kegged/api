@@ -40,6 +40,4 @@ db.Sequelize = Sequelize
 //   sequelize.sync({ force: true })
 // }
 
-sequelize.sync()
-
 export default db

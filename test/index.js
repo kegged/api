@@ -22,6 +22,7 @@ const mocha = new Mocha()
 prepare(() => {
   [
     'controllers/user',
+    'controllers/post',
     'teardown',
   ].forEach(f => mocha.addFile(join(__dirname, f)))
 

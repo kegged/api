@@ -25,10 +25,6 @@ export default (sequelize, DataTypes) => {
     ],
   })
 
-  Brewery.defaultScope = {
-    include: [ { all: true } ]
-  }
-
   Brewery.associate = models => {
     Brewery.hasMany(models.Brew, {
       foreignKey: 'breweryId',
@@ -45,6 +41,7 @@ export default (sequelize, DataTypes) => {
     Brewery.belongsTo(models.City, {
       foreignKey: 'cityId',
       as: 'city',
+      allowNull: false,
     })
   }
 
