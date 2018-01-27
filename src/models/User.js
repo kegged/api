@@ -46,7 +46,9 @@ export default (sequelize, DataTypes) => {
     })
   }
 
-  User.defaultScope = { include: [{ all: true }] }
+  User.defaultScope = {
+    include: [{ all: true }]
+  }
 
   User.prototype.generateToken = async function() {
     const { userName, email, isAdmin, id } = this

@@ -1,4 +1,5 @@
 import models from '@/models'
+import * as errors from '@/errors'
 import { generateHash } from '@/utils'
 
 export default class UserController {
@@ -17,9 +18,7 @@ export default class UserController {
       attributes: pub ? UserController.publicAttributes : undefined,
     })
     if (!user) {
-      const err = new Error('user does not exist')
-      err.status = 404
-      return { user: null, error: err }
+      return { user: null, error: new errors.UnauthorizedError() }
     }
     return { user }
   }
@@ -66,20 +65,21 @@ export default class UserController {
     const { user, error } = await UserController.findUserOr404(userName)
     if (error) return next(error)
 
-    const buffer = req.body
+    const { body } = req
 
-    if (typeof buffer.passWord !== 'undefined') {
-      const { salt, hash } = generateHash(passWord)
-      buffer.salt = salt
-      buffer.hash = hash
-      delete buffer.passWord
+    console.log(body)
+
+    if (typeof body.passWord !== 'undefined') {
+      const { salt, hash } = await generateHash(passWord)
+      body.salt = salt
+      body.hash = hash
+      delete body.passWord
     }
 
     try {
-      await user.updateAttributes(buffer)
-    } catch (e) { next(new Error('failed at update')) }
-
-    res.status(200).json({ updatedUser: user })
+      await user.updateAttributes(body)
+      res.status(200).json({ updatedUser: user })
+    } catch (e) { next(e) }
   }
 
   static async deleteUser(req, res, next) {

@@ -1,4 +1,5 @@
 import models from '@/models'
+import * as errors from '@/errors'
 
 export default class AuthController {
 
@@ -7,11 +8,8 @@ export default class AuthController {
 
     // resolve user by userName
     const user = await models.User.findOne({ where: { userName } })
-    if (!user) {
-      const err = new Error('user does not exist')
-      err.status = 404
-      return next(err)
-    }
+    console.log('user =>', user)
+    if (!user) return next(new errors.ModelNotFoundError('user'))
 
     const isMatch = await user.checkPassword(passWord)
     if (!isMatch) {

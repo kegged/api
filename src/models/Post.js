@@ -28,6 +28,11 @@ export default (sequelize, DataTypes) => {
       as: 'brewery',
       allowNull: true,
     })
+    Post.belongsTo(models.User, {
+      foreignKey: 'userId',
+      as: 'user',
+      allowNull: false,
+    })
   }
 
   return Post
