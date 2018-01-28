@@ -1,8 +1,13 @@
+import slugify from 'sequelize-slugify'
+
 export default (sequelize, DataTypes) => {
   const Brewery = sequelize.define('Brewery', {
     name: {
       type: DataTypes.STRING,
       allowNull: false,
+    },
+    slug: {
+      type: DataTypes.STRING,
     },
     bannerUrl: {
       type: DataTypes.STRING,
@@ -20,9 +25,13 @@ export default (sequelize, DataTypes) => {
     indexes: [
       {
         unique: true,
-        fields: ['name', 'cityId']
+        fields: ['name', 'slug', 'cityId']
       }
     ],
+  })
+
+  slugify.slugifyModel(Brewery, {
+    source: ['name']
   })
 
   Brewery.associate = models => {
