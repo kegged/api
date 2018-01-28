@@ -1,4 +1,5 @@
 export { default as requireAuth } from './requireAuth'
+export { default as requireAdmin } from './requireAdmin'
 export { default as errorHandler } from './errorHandler'
 export { default as notFound } from './notFound'
 export { default as errorWrapper } from './errorWrapper'

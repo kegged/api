@@ -1,11 +1,12 @@
 import { Router } from 'express'
 
+import { requireAdmin } from '@/middleware'
 import { BreweryController } from '@/controllers'
 
 const router = Router()
 
 router.route('/')
-  .post(BreweryController.createBrewery)
+  .post(requireAdmin, BreweryController.createBrewery)
   .get(BreweryController.getBreweries)
 
 router.route('/:city/:slug')

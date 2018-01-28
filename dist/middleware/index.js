@@ -13,6 +13,15 @@ Object.defineProperty(exports, 'requireAuth', {
   }
 });
 
+var _requireAdmin = require('./requireAdmin');
+
+Object.defineProperty(exports, 'requireAdmin', {
+  enumerable: true,
+  get: function () {
+    return _interopRequireDefault(_requireAdmin).default;
+  }
+});
+
 var _errorHandler = require('./errorHandler');
 
 Object.defineProperty(exports, 'errorHandler', {
