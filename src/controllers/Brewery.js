@@ -58,7 +58,7 @@ export default class BreweryController {
   static async getBrewery(req, res, next) {
     const { city, name } = req.params
 
-    const $city = await models.City.findOne({ where: { name: city } })
+    const $city = await models.City.findOne({ where: { slug: city } })
     if (!$city) return next(new errors.ModelNotFoundError('City'))
 
     const brewery = await models.Brewery.findOne({
