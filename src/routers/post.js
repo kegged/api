@@ -9,7 +9,7 @@ router.route('/')
   .get(PostController.getPosts)
   .post(requireAuth, PostController.createPost)
 
-router.route('/:id/:title')
+router.route('/:slug')
   .get(PostController.getPost)
   .put(requireAuth, PostController.updatePost)
 

@@ -23,28 +23,30 @@ export default class PostController {
     { model: models.PostTag, as: 'tags', include: [
       { model: models.Tag, as: 'tag' }
     ] },
-    { model: models.User, as: 'user' },
+    { model: models.User, as: 'user', attributes: models.User.$publicScope },
     { model: models.Comment, as: 'comments', include: [
-      { model: models.User, as: 'user' }
+      { model: models.User, as: 'user', attributes: models.User.$publicScope }
     ] }
   ]
 
-  static async getPosts(req, res) {
+  static multiPostEagerGraph = [
+    { model: models.User, as: 'user', attributes: models.User.$publicScope },
+    { model: models.Brewery, as: 'brewery' },
+  ]
+
+  static async getPosts(req, res, next) {
     const posts = await models.Post.findAll({
-      include: [
-        { model: models.User, as: 'user' },
-        { model: models.Brewery, as: 'brewery' },
-      ]
+      include: PostController.multiPostEagerGraph,
     })
 
     res.status(200).json(posts)
   }
 
-  static async getPost(req, res) {
-    const { id, title } = req.params
+  static async getPost(req, res, next) {
+    const { slug } = req.params
 
     const post = await models.Post.findOne({
-      where: { id, title },
+      where: { slug },
       include: PostController.singlePostEagerGraph,
     })
     if (!post) return next(new errors.ModelNotFoundError('Post'))
@@ -75,13 +77,13 @@ export default class PostController {
 
   static async updatePost(req, res, next) {
     const { body, user } = req
-    const { id, title } = req.params
+    const { slug } = req.params
 
     try {
       joi.assert(body, PostController.updatePostSchema)
     } catch (err) { return next(err) }
 
-    const post = models.Post.findOne({ where: { id, title } })
+    const post = models.Post.findOne({ where: { slug } })
     if (!post) return next(new errors.ModelNotFoundError('Post'))
 
     if (!user.isAdmin && post.id !== user.id) {
