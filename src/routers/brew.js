@@ -8,7 +8,7 @@ router.route('/')
   .post(BrewController.createBrew)
   .get(BrewController.getBrews)
 
-router.route('/:city/:brewery/:name')
+router.route('/:city/:brewery/:slug')
   .get(BrewController.getBrew)
 
 export default router
