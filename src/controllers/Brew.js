@@ -39,19 +39,19 @@ export default class BrewController {
     const { city, brewery, slug } = req.params
 
     try {
-      const $city = await models.City.findOne({ name: city })
+      const $city = await models.City.findOne({ where: { slug: city } })
       if (!$city) throw new errors.ModelNotFoundError('City')
 
       const $brewery = await models.Brewery.findOne({
-        name: brewery, cityId: $city.id,
+        where: { slug: brewery, cityId: $city.id }
       })
       if (!$brewery) throw new errors.ModelNotFoundError('Brewery')
 
       const brew = await models.Brew.findOne({
-        slug,
-        breweryId: $brewery.id,
+        where: { slug, breweryId: $brewery.id },
         include: BrewController.brewEagerGraph
       })
+      if (!brew) throw new errors.ModelNotFoundError('Brew')
 
       res.status(200).json(brew)
     } catch (err) { next(err) }
@@ -69,13 +69,15 @@ export default class BrewController {
       const brew = await models.Brew.create(body)
 
       const tags = []
-      for (const tagName of body.tags) {
-        const [tag] = await models.Tag.findOrCreate({ where: { name: tagName } })
-        const [brewTag] = await models.BrewTag.findOrCreate({
-          where: { brewId: brew.id, tagId: tag.id }
-        })
+      if (body.tags) {
+        for (const tagName of body.tags) {
+          const [tag] = await models.Tag.findOrCreate({ where: { name: tagName } })
+          const [brewTag] = await models.BrewTag.findOrCreate({
+            where: { brewId: brew.id, tagId: tag.id }
+          })
 
-        tags.push({ ...brewTag.dataValues, tag: tag.dataValues })
+          tags.push({ ...brewTag.dataValues, tag: tag.dataValues })
+        }
       }
 
       res.status(201).send({
