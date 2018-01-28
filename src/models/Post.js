@@ -1,8 +1,14 @@
+import slugify from 'sequelize-slugify'
+
 export default (sequelize, DataTypes) => {
   const Post = sequelize.define('Post', {
     title: {
       type: DataTypes.STRING,
       allowNull: false,
+    },
+    slug: {
+      type: DataTypes.STRING,
+      unique: true,
     },
     content: {
       type: DataTypes.TEXT,
@@ -10,6 +16,9 @@ export default (sequelize, DataTypes) => {
     },
   })
 
+  slugify.slugifyModel(Post, {
+    source: ['title']
+  })
 
   Post.associate = models => {
     Post.hasMany(models.PostTag, {
