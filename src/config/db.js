@@ -4,6 +4,7 @@ export default { ...(() => {
     DB_PASS,
     DB_NAME,
     DB_HOST,
+    DB_PORT,
     NODE_ENV,
     SQLITE_PATH,
   } = process.env

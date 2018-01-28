@@ -16,6 +16,7 @@ exports.default = (0, _extends3.default)({}, (() => {
     DB_PASS,
     DB_NAME,
     DB_HOST,
+    DB_PORT,
     NODE_ENV,
     SQLITE_PATH
   } = process.env;
@@ -27,8 +28,8 @@ exports.default = (0, _extends3.default)({}, (() => {
       return { dialect: 'sqlite', storage: SQLITE_PATH };
     case 'production':
       return {
-        username: 'root',
-        port: 3306,
+        username: DB_USER || 'root',
+        port: DB_PORT || 3306,
         password: DB_PASS || '',
         database: DB_NAME || 'kegged_local',
         dialect: 'mysql',
