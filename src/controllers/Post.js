@@ -23,14 +23,9 @@ export default class PostController {
     { model: models.PostTag, as: 'tags', include: [
       { model: models.Tag, as: 'tag' }
     ] },
-    { model: models.User, as: 'user', fields: [
-      // TODO: mk models.User.$publicScope
-      'userName', 'firstName', 'lastName', 'email', 'id'
-    ] },
+    { model: models.User, as: 'user' },
     { model: models.Comment, as: 'comments', include: [
-      { model: models.User, as: 'user', fields: [
-        'userName', 'firstName', 'lastName', 'email', 'id'
-      ] }
+      { model: models.User, as: 'user' }
     ] }
   ]
 

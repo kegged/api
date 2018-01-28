@@ -98,7 +98,11 @@ export default class UserController {
     const { userName } = req.params
 
     try {
-      const user = await models.User.findOne({ where: { userName } })
+      const user = await models.User.findOne({
+        where: { userName },
+        attributes: models.User.$publicScope,
+        include: UserController.userEagerGraph,
+      })
       if (!user) throw new errors.ModelNotFoundError('User')
 
       res.status(200).json({ user })
