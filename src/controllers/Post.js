@@ -71,13 +71,15 @@ export default class PostController {
       const post = await models.Post.create(req.body)
 
       const tags = []
-      for (const tagName of body.tags) {
-        const [tag] = await models.Tag.findOrCreate({ where: { name: tagName } })
-        const [postTag] = await models.PostTag.findOrCreate({
-          where: { postId: post.id, tagId: tag.id }
-        })
+      if (body.tags) {
+        for (const tagName of body.tags) {
+          const [tag] = await models.Tag.findOrCreate({ where: { name: tagName } })
+          const [postTag] = await models.PostTag.findOrCreate({
+            where: { postId: post.id, tagId: tag.id }
+          })
 
-        tags.push({ ...postTag.dataValues, tag: tag.dataValues })
+          tags.push({ ...postTag.dataValues, tag: tag.dataValues })
+        }
       }
 
       res.status(201).send({

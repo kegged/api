@@ -62,8 +62,7 @@ export default class BreweryController {
     if (!$city) return next(new errors.ModelNotFoundError('City'))
 
     const brewery = await models.Brewery.findOne({
-      slug,
-      cityId: $city.id,
+      where: { slug, cityId: $city.id },
       include: BreweryController.singleBreweryEagerGraph,
     })
     if (!brewery) return next(new errors.ModelNotFoundError('Brewery'))
@@ -82,13 +81,15 @@ export default class BreweryController {
       const brewery = await models.Brewery.create({ ...body, cityId: city.id })
 
       const tags = []
-      for (const tagName of body.tags) {
-        const [tag] = await models.Tag.findOrCreate({ where: { name: tagName } })
-        const [breweryTag] = await models.BreweryTag.findOrCreate({
-          where: { breweryId: brewery.id, tagId: tag.id }
-        })
+      if (body.tags) {
+        for (const tagName of body.tags) {
+          const [tag] = await models.Tag.findOrCreate({ where: { name: tagName } })
+          const [breweryTag] = await models.BreweryTag.findOrCreate({
+            where: { breweryId: brewery.id, tagId: tag.id }
+          })
 
-        tags.push({ ...breweryTag.dataValues, tag: tag.dataValues })
+          tags.push({ ...breweryTag.dataValues, tag: tag.dataValues })
+        }
       }
 
       res.status(201).send({
