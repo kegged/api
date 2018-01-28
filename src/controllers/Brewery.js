@@ -32,7 +32,7 @@ export default class BreweryController {
       { model: models.Tag, as: 'tag'} 
     ] },
     { model: models.Post, as: 'posts', include: [
-      { model: models.User, as: 'user' },
+      { model: models.User, as: 'user', attributes: models.User.$publicScope },
       { model: models.PostTag, as: 'tags', include: [
         { model: models.Tag, as: 'tag' }
       ] }

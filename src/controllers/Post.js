@@ -10,6 +10,7 @@ export default class PostController {
     content: joi.string().required(),
     userId: joi.number(),
     breweryId: joi.number(),
+    tags: joi.array().items(joi.string()),
   })
 
   static updatePostSchema = joi.object().keys({
@@ -56,22 +57,33 @@ export default class PostController {
 
   static async createPost(req, res, next) {
     const { body } = req
-
+    const { isAdmin, id } = req.user
+    
     try {
       joi.assert(body, PostController.newPostSchema)
-    } catch (err) { return next(err) }
 
-    const { isAdmin, id } = req.user
+      if (typeof body.userId !== 'number') {
+        body.userId = id
+      } else if (!isAdmin && id !== body.userId) {
+        throw new errors.UnauthorizedError()
+      }
 
-    if (typeof body.userId !== 'number') {
-      body.userId = req.user.id
-    } else if (!isAdmin && id !== body.userId) {
-      return next(new errors.UnauthorizedError())
-    }
+      const post = await models.Post.create(req.body)
 
-    try {
-      const newPost = await models.Post.create(req.body)
-      res.status(201).json({ newPost })
+      const tags = []
+      for (const tagName of body.tags) {
+        const [tag] = await models.Tag.findOrCreate({ where: { name: tagName } })
+        const [postTag] = await models.PostTag.findOrCreate({
+          where: { postId: post.id, tagId: tag.id }
+        })
+
+        tags.push({ ...postTag.dataValues, tag: tag.dataValues })
+      }
+
+      res.status(201).send({
+        newBrewery: { ...post.dataValues, tags }
+      })
+      
     } catch (err) { next(err) }
   }
 
