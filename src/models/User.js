@@ -47,6 +47,18 @@ export default (sequelize, DataTypes) => {
     })
   }
 
+  User.$publicScope = [
+    'userName', 'firstName', 'lastName', 'email', 'id'
+  ]
+
+  User.$privateScope = [
+    ...User.$publicScope, 'salt', 'hash', 'isAdmin'
+  ]
+
+  User.defaultScope = {
+    attributes: User.$publicScope
+  }
+
   User.prototype.generateToken = async function() {
     const { userName, email, isAdmin, id } = this
     return jwt.sign({

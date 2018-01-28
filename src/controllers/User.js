@@ -1,3 +1,5 @@
+import joi from 'joi'
+
 import models from '@/models'
 import * as errors from '@/errors'
 import { generateHash } from '@/utils'
@@ -8,106 +10,110 @@ export default class UserController {
     'id', 'userName', 'firstName', 'lastName', 'email'
   ]
 
-  static async findUserOr404(userName, pub) {
-    const user = await models.User.findOne({
-      where: { userName },
-      include: [
-        { model: models.Post, as: 'posts' },
-        { model: models.Comment, as: 'comments' },
-      ],
-      attributes: pub ? UserController.publicAttributes : undefined,
-    })
-    if (!user) {
-      return { user: null, error: new errors.UnauthorizedError() }
-    }
-    return { user }
-  }
+  static newUserSchema = joi.object().keys({
+    email: joi.string().email().required(),
+    userName: joi.string().alphanum().min(3).max(20).required(),
+    passWord: joi.string().min(8).max(20).required(),
+    firstName: joi.string().max(50).required(),
+    lastName: joi.string().max(50).required(),
+  })
+
+  static updateUserSchema = joi.object().keys({
+    email: joi.string().email(),
+    userName: joi.string().alphanum().min(3).max(20),
+    passWord: joi.string().min(8).max(20),
+    firstName: joi.string().max(50),
+    lastName: joi.string().max(50),
+  })
+
+  static userEagerGraph = [
+    { model: models.Post, as: 'posts' },
+    { model: models.Comment, as: 'comments' }
+  ]
 
   static async createUser(req, res, next) {
-    const { userName, firstName, lastName, email, passWord } = req.body
+    const { body } = req
 
-    const fields = { userName, firstName, lastName, email, passWord }
-    if (!Object.values(fields).every(val => typeof val !== 'undefined')) {
-      // all fields are required; throw bad request
-      const err = new Error('Bad request')
-      err.status = 400
-      return next(err)
-    }
-  
-    const { hash, salt } = await generateHash(passWord)
-    delete fields.passWord
-  
     try {
+      joi.assert(body, UserController.newUserSchema)
+    
+      const { hash, salt } = await generateHash(body.passWord)
+    
       const newUser = await models.User.create({
-        ...fields, hash, salt
+        ...body, hash, salt
       })
 
       const token = await newUser.generateToken()
   
       res.status(201).json({ newUser, token })
-    } catch (err) {
-      return next(err)
-    }
+    } catch (err) { next(err) }
   }
 
   static async updateUser(req, res, next) {
-    const { userName } = req.params
-    const { firstName, lastName, email, passWord } = req.body
-
-    if (req.user.userName !== userName && !req.user.isAdmin) {
-      // user is unauthorized update
-      const err = new Error('unauthorized')
-      err.status = 401
-      return next(err)
-    }
-
-    // find user
-    const { user, error } = await UserController.findUserOr404(userName)
-    if (error) return next(error)
-
-    const { body } = req
-
-    if (typeof body.passWord !== 'undefined') {
-      const { salt, hash } = await generateHash(passWord)
-      body.salt = salt
-      body.hash = hash
-      delete body.passWord
-    }
+    const { body, params } = req
 
     try {
+      joi.assert(body, UserController.updateUserSchema)
+
+      if (req.user.userName !== params.userName && !req.user.isAdmin) {
+        throw new errors.UnauthorizedError()
+      }
+
+      const user = await models.User.findOne({
+        where: { userName: params.userName }
+      })
+      if (!user) throw new errors.ModelNotFoundError('User')
+
+      if (typeof body.passWord === 'string') {
+        const { salt, hash } = await generateHash(body.passWord)
+        body.salt = salt
+        body.hash = hash
+      }
+
       await user.updateAttributes(body)
+      console.log('username', user.userName)
+
       res.status(200).json({ updatedUser: user })
-    } catch (e) { next(e) }
+    } catch (err) { next(err) }
   }
 
   static async deleteUser(req, res, next) {
     const { userName } = req.params
 
-    if (req.user.userName !== userName && !req.user.isAdmin) {
-      // user is unauthorized to delete
-      const err = new Error('unauthorized')
-      err.status = 401
-      next(err)
-    }
+    try {
+      const user = await models.User.findOne({ where: { userName } })
+      if (!user) throw new errors.ModelNotFoundError('User')
 
-    const { user, error } = await UserController.findUserOr404(userName)
-    if (error) return next(error)
+      if (req.user.userName !== userName && !req.user.isAdmin) {
+        throw new errors.UnauthorizedError()
+      }
 
-    await models.User.destroy({ where: { userName } })
+      await models.User.destroy({ where: { userName } })
 
-    res.status(200).json({ deletedUser: user })
+      res.status(200).json({ deletedUser: user })
+    } catch (err) { next(err) }
   }
 
   static async getUser(req, res, next) {
     const { userName } = req.params
 
-    const { user, error } = await UserController.findUserOr404(userName, true)
-    return error ? next(error) : res.status(200).json({ user })
+    try {
+      const user = await models.User.findOne({
+        where: { userName },
+        attributes: models.User.$publicScope,
+        include: UserController.userEagerGraph,
+      })
+      if (!user) throw new errors.ModelNotFoundError('User')
+
+      res.status(200).json({ user })
+    } catch (err) { next(err) }
   }
 
   static async getUsers(req, res, next) {
-    const users = await models.User.findAll({ attributes: UserController.publicAttributes })
-    res.status(200).send({ users })
+    try {
+      const users = await models.User.findAll({ attributes: UserController.publicAttributes })
+      res.status(200).send({ users })
+    } catch (err) { next(err) }
   }
 
 }

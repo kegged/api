@@ -33,7 +33,7 @@ describe('POST /users', () => {
     request(app)
       .post('/users')
       .type('json')
-      .send(JSON.stringify(users[0]).trim())
+      .send(users[0])
       .expect(201)
       .end((err, res) => {
         if (err) return done(err)
@@ -48,7 +48,7 @@ describe('POST /users', () => {
     request(app)
       .post('/users')
       .type('json')
-      .send(JSON.stringify(users[1]).trim())
+      .send(users[1])
       .expect(400)
       .end((err, res) => {
         if (err) return done(err)
@@ -56,11 +56,11 @@ describe('POST /users', () => {
       })
   })
 
-  it('should create user even with extra fields', done  => {
+  it('should create second user', done  => {
     request(app)
       .post('/users')
       .type('json')
-      .send(JSON.stringify({ ...users[2], foo: 'bar' }).trim())
+      .send(users[2])
       .expect(201)
       .end((err, res) => {
         if (err) return done(err)
