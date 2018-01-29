@@ -12,4 +12,6 @@ const router = (0, _express.Router)();
 
 router.route('/').get(_controllers.CityController.getCities);
 
+router.route('/:slug').get(_controllers.CityController.getCity);
+
 exports.default = router;
