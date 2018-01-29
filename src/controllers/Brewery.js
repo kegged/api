@@ -24,8 +24,11 @@ export default class BreweryController {
   static singleBreweryEagerGraph = [
     { model: models.Brew, as: 'brews', include: [
       { model: models.BrewTag, as: 'tags', include: [
+        { model: models.Tag, as: 'tag' },
+      ] },
+      { model: models.BrewStyle, as: 'style', include: [
         { model: models.Tag, as: 'tag' }
-      ] }
+      ] },
     ] },
     { model: models.City, as: 'city' },
     { model: models.BreweryTag, as: 'tags', include: [
