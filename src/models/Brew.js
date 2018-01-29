@@ -27,12 +27,18 @@ export default (sequelize, DataTypes) => {
 
   Brew.associate = models => {
     Brew.belongsTo(models.Brewery, {
+      allowNull: false,
       foreignKey: 'breweryId',
       as: 'brewery',
     })
     Brew.hasMany(models.BrewTag, {
       foreignKey: 'brewId',
       as: 'tags',
+    })
+    Brew.hasOne(models.BrewStyle, {
+      allowNull: false,
+      foreignKey: 'brewId',
+      as: 'style',
     })
   }
 

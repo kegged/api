@@ -23,6 +23,9 @@ exports.default = (sequelize, DataTypes) => {
     Tag.hasMany(models.BreweryTag, {
       foreignKey: 'tagId'
     });
+    Tag.hasMany(models.BrewStyle, {
+      foreignKey: 'tagId'
+    });
   };
 
   return Tag;
