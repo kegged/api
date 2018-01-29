@@ -36,8 +36,8 @@ db.sequelize = sequelize
 /* deps */
 db.Sequelize = Sequelize
 
-// if (env !== 'test') {
-//   sequelize.sync({ force: true })
-// }
+if (env !== 'test') {
+  sequelize.sync({ force: true })
+}
 
 export default db
