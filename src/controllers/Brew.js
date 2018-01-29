@@ -9,6 +9,7 @@ export default class BrewController {
     name: joi.string().required(),
     photoUrl: joi.string().required(),
     breweryId: joi.number().required(),
+    style: joi.string().required(),
     tags: joi.array().items(joi.string())
   })
 
@@ -22,6 +23,9 @@ export default class BrewController {
       { model: models.City, as: 'city' }
     ] },
     { model: models.BrewTag, as: 'tags', include: [
+      { model: models.Tag, as: 'tag' }
+    ] },
+    { model: models.BrewStyle, as: 'style', include: [
       { model: models.Tag, as: 'tag' }
     ] }
   ]
@@ -68,6 +72,11 @@ export default class BrewController {
 
       const brew = await models.Brew.create(body)
 
+      const [styleTag] = await models.Tag.findOrCreate({ where: { name: body.style } })
+      const [brewStyle] = await models.BrewStyle.findOrCreate({
+        where: { brewId: brew.id, tagId: styleTag.id }
+      })
+
       const tags = []
       if (body.tags) {
         for (const tagName of body.tags) {
@@ -81,7 +90,12 @@ export default class BrewController {
       }
 
       res.status(201).send({
-        newBrew: { ...brew.dataValues, tags, brewery: brewery.dataValues }
+        newBrew: {
+          ...brew.dataValues,
+          brewery: brewery.dataValues,
+          style: { ...brewStyle.dataValues, tag: styleTag.dataValues },
+          tags,
+        }
       })
     } catch (err) { next(err) }
   }

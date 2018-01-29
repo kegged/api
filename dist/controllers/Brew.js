@@ -81,6 +81,11 @@ class BrewController {
 
         const brew = yield _models2.default.Brew.create(body);
 
+        const [styleTag] = yield _models2.default.Tag.findOrCreate({ where: { name: body.style } });
+        const [brewStyle] = yield _models2.default.BrewStyle.findOrCreate({
+          where: { brewId: brew.id, tagId: styleTag.id }
+        });
+
         const tags = [];
         if (body.tags) {
           for (const tagName of body.tags) {
@@ -94,7 +99,11 @@ class BrewController {
         }
 
         res.status(201).send({
-          newBrew: (0, _extends3.default)({}, brew.dataValues, { tags, brewery: brewery.dataValues })
+          newBrew: (0, _extends3.default)({}, brew.dataValues, {
+            brewery: brewery.dataValues,
+            style: (0, _extends3.default)({}, brewStyle.dataValues, { tag: styleTag.dataValues }),
+            tags
+          })
         });
       } catch (err) {
         next(err);
@@ -108,10 +117,11 @@ BrewController.newBrewSchema = _joi2.default.object().keys({
   name: _joi2.default.string().required(),
   photoUrl: _joi2.default.string().required(),
   breweryId: _joi2.default.number().required(),
+  style: _joi2.default.string().required(),
   tags: _joi2.default.array().items(_joi2.default.string())
 });
 BrewController.updateBrewSchema = _joi2.default.object().keys({
   name: _joi2.default.string(),
   photoUrl: _joi2.default.string()
 });
-BrewController.brewEagerGraph = [{ model: _models2.default.Brewery, as: 'brewery', include: [{ model: _models2.default.City, as: 'city' }] }, { model: _models2.default.BrewTag, as: 'tags', include: [{ model: _models2.default.Tag, as: 'tag' }] }];
+BrewController.brewEagerGraph = [{ model: _models2.default.Brewery, as: 'brewery', include: [{ model: _models2.default.City, as: 'city' }] }, { model: _models2.default.BrewTag, as: 'tags', include: [{ model: _models2.default.Tag, as: 'tag' }] }, { model: _models2.default.BrewStyle, as: 'style', include: [{ model: _models2.default.Tag, as: 'tag' }] }];
