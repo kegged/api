@@ -23,6 +23,7 @@ app
 
 // mount vendor middleware
 app
+  .use(cors({ credentials: true, origin: true }))
   .use(compression())
   .use(helmet())
   .use(jsonParser())

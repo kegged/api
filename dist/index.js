@@ -51,7 +51,7 @@ const app = (0, _express2.default)();
 app.disable('x-powered-by').disable('etag');
 
 // mount vendor middleware
-app.use((0, _compression2.default)()).use((0, _helmet2.default)()).use((0, _bodyParser.json)());
+app.use((0, _cors2.default)({ credentials: true, origin: true })).use((0, _compression2.default)()).use((0, _helmet2.default)()).use((0, _bodyParser.json)());
 
 if (!TEST) {
   // disable logger durring tests
