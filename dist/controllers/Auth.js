@@ -26,20 +26,24 @@ class AuthController {
     return (0, _asyncToGenerator3.default)(function* () {
       const { userName, passWord } = req.body;
 
-      // resolve user by userName
-      const user = yield _models2.default.User.findOne({ where: { userName } });
-      if (!user) return next(new errors.ModelNotFoundError('user'));
+      try {
+        const user = yield _models2.default.User.findOne({ where: { userName } });
+        if (!user) throw new errors.ModelNotFoundError('User');
 
-      const isMatch = yield user.checkPassword(passWord);
-      if (!isMatch) {
-        const err = new Error('incorrect password');
-        err.status = 401;
-        return next(err);
+        const isMatch = yield user.checkPassword(passWord);
+        if (!isMatch) throw new errors.Unauthorized();
+
+        const token = yield user.generateToken();
+
+        const $user = user.dataValues;
+        ['hash', 'salt', 'isAdmin'].forEach(function (key) {
+          return delete $user[key];
+        });
+
+        res.status(200).json({ token, user: $user });
+      } catch (err) {
+        next(err);
       }
-
-      const token = yield user.generateToken();
-
-      res.status(200).json({ token });
     })();
   }
 
