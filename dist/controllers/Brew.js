@@ -111,6 +111,36 @@ class BrewController {
     })();
   }
 
+  static updateBrew(req, res, next) {
+    return (0, _asyncToGenerator3.default)(function* () {
+      const { body, params } = req;
+      const { city, brewery, slug } = params;
+
+      try {
+        _joi2.default.assert(body, BrewController.updateBrewSchema);
+
+        const $city = yield _models2.default.City.findOne({ where: { slug: city } });
+        if (!$city) throw new errors.ModelNotFoundError('City');
+
+        const $brewery = yield _models2.default.Brewery.findOne({
+          where: { slug: brewery, cityId: $city.id }
+        });
+        if (!$brewery) throw new errors.ModelNotFoundError('Brewery');
+
+        const brew = yield _models2.default.Brew.findOne({
+          where: { slug, breweryId: $brewery.id }
+        });
+        if (!brew) throw new errors.ModelNotFoundError('Brew');
+
+        yield brew.updateAttributes(body);
+
+        res.status(200).json({ updatedBrew: brew });
+      } catch (err) {
+        next(err);
+      }
+    })();
+  }
+
 }
 exports.default = BrewController;
 BrewController.newBrewSchema = _joi2.default.object().keys({

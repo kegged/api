@@ -31,7 +31,7 @@ class AuthController {
         if (!user) throw new errors.ModelNotFoundError('User');
 
         const isMatch = yield user.checkPassword(passWord);
-        if (!isMatch) throw new errors.Unauthorized();
+        if (!isMatch) throw new errors.UnauthorizedError();
 
         const token = yield user.generateToken();
 

@@ -11,7 +11,7 @@ export default class AuthController {
       if (!user) throw new errors.ModelNotFoundError('User')
 
       const isMatch = await user.checkPassword(passWord)
-      if (!isMatch) throw new errors.Unauthorized()
+      if (!isMatch) throw new errors.UnauthorizedError()
 
       const token = await user.generateToken()
 
