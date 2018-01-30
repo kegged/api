@@ -99,4 +99,26 @@ export default class BreweryController {
     } catch (err) { return next(err) }
   }
 
+  static async updateBrewery(req, res, next) {
+    const { params, body } = req
+    const { city, slug } = params
+
+    try {    
+      const $city = await models.City.findOne({ where: { slug: city } })
+      if (!$city) return next(new errors.ModelNotFoundError('City'))
+
+      const brewery = await models.Brewery.findOne({
+        where: { slug, cityId: $city.id },
+        include: BreweryController.singleBreweryEagerGraph,
+      })
+      if (!brewery) return next(new errors.ModelNotFoundError('Brewery'))
+
+      await brewery.updateAttributes(body)
+
+      res.status(200).send({
+        updatedBrewery: brewery
+      })
+    } catch (err) { next(err) }
+  }
+
 }

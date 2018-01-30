@@ -90,6 +90,32 @@ class BreweryController {
     })();
   }
 
+  static updateBrewery(req, res, next) {
+    return (0, _asyncToGenerator3.default)(function* () {
+      const { params, body } = req;
+      const { city, slug } = params;
+
+      try {
+        const $city = yield _models2.default.City.findOne({ where: { slug: city } });
+        if (!$city) return next(new errors.ModelNotFoundError('City'));
+
+        const brewery = yield _models2.default.Brewery.findOne({
+          where: { slug, cityId: $city.id },
+          include: BreweryController.singleBreweryEagerGraph
+        });
+        if (!brewery) return next(new errors.ModelNotFoundError('Brewery'));
+
+        yield brewery.updateAttributes(body);
+
+        res.status(200).send({
+          updatedBrewery: brewery
+        });
+      } catch (err) {
+        next(err);
+      }
+    })();
+  }
+
 }
 exports.default = BreweryController;
 BreweryController.newBrewerySchema = _joi2.default.object().keys({

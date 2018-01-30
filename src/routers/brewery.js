@@ -11,5 +11,6 @@ router.route('/')
 
 router.route('/:city/:slug')
   .get(BreweryController.getBrewery)
+  .put(requireAdmin, BreweryController.updateBrewery)
 
 export default router
