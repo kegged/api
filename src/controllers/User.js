@@ -116,4 +116,17 @@ export default class UserController {
     } catch (err) { next(err) }
   }
 
+  static async getUserByEmail(req, res, next) {
+    const { slug } = req.params
+
+    try {
+      if (!slug) throw new errors.ValidationError('Email is required')
+
+      const user = await models.User.findOne({ where: { email: slug } })
+      if (!user) throw new errors.ModelNotFoundError('User')
+
+      res.status(200).json({ user })
+    } catch (err) { next(err) }
+  }
+
 }

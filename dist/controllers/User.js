@@ -136,6 +136,23 @@ class UserController {
     })();
   }
 
+  static getUserByEmail(req, res, next) {
+    return (0, _asyncToGenerator3.default)(function* () {
+      const { slug } = req.params;
+
+      try {
+        if (!slug) throw new errors.ValidationError('Email is required');
+
+        const user = yield _models2.default.User.findOne({ where: { email: slug } });
+        if (!user) throw new errors.ModelNotFoundError('User');
+
+        res.status(200).json({ user });
+      } catch (err) {
+        next(err);
+      }
+    })();
+  }
+
 }
 exports.default = UserController;
 UserController.publicAttributes = ['id', 'userName', 'firstName', 'lastName', 'email'];

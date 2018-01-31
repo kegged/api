@@ -16,4 +16,6 @@ router.route('/').get(_controllers.UserController.getUsers).post(_controllers.Us
 
 router.route('/:userName').get(_controllers.UserController.getUser).put(_middleware.requireAuth, _controllers.UserController.updateUser).delete(_middleware.requireAuth, _controllers.UserController.deleteUser);
 
+router.get('/email/:slug', _controllers.UserController.getUserByEmail);
+
 exports.default = router;

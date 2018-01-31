@@ -14,4 +14,6 @@ router.route('/:userName')
   .put(requireAuth, UserController.updateUser)
   .delete(requireAuth, UserController.deleteUser)
 
+router.get('/email/:slug', UserController.getUserByEmail)
+
 export default router
