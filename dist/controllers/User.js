@@ -172,4 +172,4 @@ UserController.updateUserSchema = _joi2.default.object().keys({
   lastName: _joi2.default.string().max(50)
 });
 UserController.userSortGraph = [[{ model: _models2.default.Post, as: 'posts' }, 'updatedAt', 'DESC'], [{ model: _models2.default.Comment, as: 'comments' }, 'updatedAt', 'DESC']];
-UserController.userEagerGraph = [{ model: _models2.default.Post, as: 'posts' }, { model: _models2.default.Comment, as: 'comments' }];
+UserController.userEagerGraph = [{ model: _models2.default.Post, as: 'posts', include: [{ model: _models2.default.Brewery, as: 'brewery' }] }, { model: _models2.default.Comment, as: 'comments', include: [{ model: _models2.default.Post, as: 'post', include: [{ model: _models2.default.Brewery, as: 'brewery' }] }] }];

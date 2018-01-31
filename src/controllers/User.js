@@ -32,8 +32,14 @@ export default class UserController {
   ]
 
   static userEagerGraph = [
-    { model: models.Post, as: 'posts' },
-    { model: models.Comment, as: 'comments' }
+    { model: models.Post, as: 'posts', include: [
+      { model: models.Brewery, as: 'brewery' }
+    ] },
+    { model: models.Comment, as: 'comments', include: [
+      { model: models.Post, as: 'post', include: [
+        { model: models.Brewery, as: 'brewery' }
+      ] }
+    ] }
   ]
 
   static async createUser(req, res, next) {
