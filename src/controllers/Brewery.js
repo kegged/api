@@ -49,6 +49,12 @@ export default class BreweryController {
     ] }
   ]
 
+  static singleBrewerySortGraph = [
+    [
+      { model: models.Post, as: 'posts' }, 'updatedAt', 'DESC',
+    ]
+  ]
+
   static async getBreweries(req, res, next) {
     const { include } = req.query
     const breweries = await models.Brewery.findAll({
@@ -67,6 +73,7 @@ export default class BreweryController {
     const brewery = await models.Brewery.findOne({
       where: { slug, cityId: $city.id },
       include: BreweryController.singleBreweryEagerGraph,
+      order: BreweryController.singleBrewerySortGraph,
     })
     if (!brewery) return next(new errors.ModelNotFoundError('Brewery'))
 

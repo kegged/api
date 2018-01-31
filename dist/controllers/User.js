@@ -114,7 +114,8 @@ class UserController {
         const user = yield _models2.default.User.findOne({
           where: { userName },
           attributes: _models2.default.User.$publicScope,
-          include: UserController.userEagerGraph
+          include: UserController.userEagerGraph,
+          order: UserController.userSortGraph
         });
         if (!user) throw new errors.ModelNotFoundError('User');
 
@@ -170,4 +171,5 @@ UserController.updateUserSchema = _joi2.default.object().keys({
   firstName: _joi2.default.string().max(50),
   lastName: _joi2.default.string().max(50)
 });
+UserController.userSortGraph = [[{ model: _models2.default.Post, as: 'posts' }, 'updatedAt', 'DESC'], [{ model: _models2.default.Comment, as: 'comments' }, 'updatedAt', 'DESC']];
 UserController.userEagerGraph = [{ model: _models2.default.Post, as: 'posts' }, { model: _models2.default.Comment, as: 'comments' }];
