@@ -83,7 +83,7 @@ export default class PostController {
       }
 
       res.status(201).send({
-        newBrewery: { ...post.dataValues, tags }
+        newPost: { ...post.dataValues, tags }
       })
       
     } catch (err) { next(err) }
