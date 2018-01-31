@@ -19,6 +19,10 @@ export default class PostController {
     breweryId: joi.number(),
   })
 
+  static singleBrewerySortGraph = [
+    [ { model: models.Comment, as: 'comments' }, 'updatedAt', 'DESC' ]
+  ]
+
   static singlePostEagerGraph = [
     { model: models.Brewery, as: 'brewery' },
     { model: models.PostTag, as: 'tags', include: [
@@ -49,6 +53,7 @@ export default class PostController {
     const post = await models.Post.findOne({
       where: { slug },
       include: PostController.singlePostEagerGraph,
+      order: PostController.singleBrewerySortGraph,
     })
     if (!post) return next(new errors.ModelNotFoundError('Post'))
 

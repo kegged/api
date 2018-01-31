@@ -26,6 +26,11 @@ export default class UserController {
     lastName: joi.string().max(50),
   })
 
+  static userSortGraph = [
+    [ { model: models.Post, as: 'posts' }, 'updatedAt', 'DESC' ],
+    [ { model: models.Comment, as: 'comments' }, 'updatedAt', 'DESC' ]
+  ]
+
   static userEagerGraph = [
     { model: models.Post, as: 'posts' },
     { model: models.Comment, as: 'comments' }
@@ -102,6 +107,7 @@ export default class UserController {
         where: { userName },
         attributes: models.User.$publicScope,
         include: UserController.userEagerGraph,
+        order: UserController.userSortGraph,
       })
       if (!user) throw new errors.ModelNotFoundError('User')
 

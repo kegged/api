@@ -50,7 +50,8 @@ class BreweryController {
 
       const brewery = yield _models2.default.Brewery.findOne({
         where: { slug, cityId: $city.id },
-        include: BreweryController.singleBreweryEagerGraph
+        include: BreweryController.singleBreweryEagerGraph,
+        order: BreweryController.singleBrewerySortGraph
       });
       if (!brewery) return next(new errors.ModelNotFoundError('Brewery'));
 
@@ -134,3 +135,4 @@ BreweryController.updateBrewerySchema = _joi2.default.object().keys({
 });
 BreweryController.singleBreweryEagerGraph = [{ model: _models2.default.Brew, as: 'brews', include: [{ model: _models2.default.BrewTag, as: 'tags', include: [{ model: _models2.default.Tag, as: 'tag' }] }, { model: _models2.default.BrewStyle, as: 'style', include: [{ model: _models2.default.Tag, as: 'tag' }] }] }, { model: _models2.default.City, as: 'city' }, { model: _models2.default.BreweryTag, as: 'tags', include: [{ model: _models2.default.Tag, as: 'tag' }] }, { model: _models2.default.Post, as: 'posts', include: [{ model: _models2.default.User, as: 'user', attributes: _models2.default.User.$publicScope }, { model: _models2.default.PostTag, as: 'tags', include: [{ model: _models2.default.Tag, as: 'tag' }] }] }];
 BreweryController.multiBreweryEagerGraph = [{ model: _models2.default.City, as: 'city' }, { model: _models2.default.BreweryTag, as: 'tags', include: [{ model: _models2.default.Tag, as: 'tag' }] }];
+BreweryController.singleBrewerySortGraph = [[{ model: _models2.default.Post, as: 'posts' }, 'updatedAt', 'DESC']];
