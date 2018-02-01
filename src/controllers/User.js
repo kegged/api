@@ -27,8 +27,8 @@ export default class UserController {
   })
 
   static userSortGraph = [
-    [ { model: models.Post, as: 'posts' }, 'updatedAt', 'DESC' ],
-    [ { model: models.Comment, as: 'comments' }, 'updatedAt', 'DESC' ]
+    [ { model: models.Post, as: 'posts' }, 'createdAt', 'DESC' ],
+    [ { model: models.Comment, as: 'comments' }, 'createdAt', 'DESC' ]
   ]
 
   static userEagerGraph = [
@@ -37,7 +37,12 @@ export default class UserController {
     ] },
     { model: models.Comment, as: 'comments', include: [
       { model: models.Post, as: 'post', include: [
-        { model: models.Brewery, as: 'brewery' }
+        { model: models.Brewery, as: 'brewery', include: [
+          { model: models.City, as: 'city' }
+        ] },
+        { model: models.PostTag, as: 'tags', include: [
+          { model: models.Tag, as: 'tag' }
+        ] }
       ] }
     ] }
   ]

@@ -51,7 +51,7 @@ export default class BreweryController {
 
   static singleBrewerySortGraph = [
     [
-      { model: models.Post, as: 'posts' }, 'updatedAt', 'DESC',
+      { model: models.Post, as: 'posts' }, 'createdAt', 'DESC',
     ]
   ]
 
