@@ -33,7 +33,12 @@ export default class UserController {
 
   static userEagerGraph = [
     { model: models.Post, as: 'posts', include: [
-      { model: models.Brewery, as: 'brewery' }
+      { model: models.Brewery, as: 'brewery', include: [
+        { model: models.City, as: 'city' }
+      ] },
+      { model: models.PostTag, as: 'tags', include: [
+        { model: models.Tag, as: 'tag' }
+      ] }
     ] },
     { model: models.Comment, as: 'comments', include: [
       { model: models.Post, as: 'post', include: [
