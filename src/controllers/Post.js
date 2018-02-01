@@ -20,7 +20,7 @@ export default class PostController {
   })
 
   static singleBrewerySortGraph = [
-    [ { model: models.Comment, as: 'comments' }, 'updatedAt', 'DESC' ]
+    [ { model: models.Comment, as: 'comments' }, 'createdAt', 'DESC' ]
   ]
 
   static singlePostEagerGraph = [

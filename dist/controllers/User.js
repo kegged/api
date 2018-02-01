@@ -171,5 +171,5 @@ UserController.updateUserSchema = _joi2.default.object().keys({
   firstName: _joi2.default.string().max(50),
   lastName: _joi2.default.string().max(50)
 });
-UserController.userSortGraph = [[{ model: _models2.default.Post, as: 'posts' }, 'updatedAt', 'DESC'], [{ model: _models2.default.Comment, as: 'comments' }, 'updatedAt', 'DESC']];
-UserController.userEagerGraph = [{ model: _models2.default.Post, as: 'posts', include: [{ model: _models2.default.Brewery, as: 'brewery' }] }, { model: _models2.default.Comment, as: 'comments', include: [{ model: _models2.default.Post, as: 'post', include: [{ model: _models2.default.Brewery, as: 'brewery' }] }] }];
+UserController.userSortGraph = [[{ model: _models2.default.Post, as: 'posts' }, 'createdAt', 'DESC'], [{ model: _models2.default.Comment, as: 'comments' }, 'createdAt', 'DESC']];
+UserController.userEagerGraph = [{ model: _models2.default.Post, as: 'posts', include: [{ model: _models2.default.Brewery, as: 'brewery' }] }, { model: _models2.default.Comment, as: 'comments', include: [{ model: _models2.default.Post, as: 'post', include: [{ model: _models2.default.Brewery, as: 'brewery', include: [{ model: _models2.default.City, as: 'city' }] }, { model: _models2.default.PostTag, as: 'tags', include: [{ model: _models2.default.Tag, as: 'tag' }] }] }] }];
