@@ -48,7 +48,7 @@ export default (sequelize, DataTypes) => {
   }
 
   User.$publicScope = [
-    'userName', 'firstName', 'lastName', 'email', 'id', 'slug'
+    'userName', 'firstName', 'lastName', 'email', 'id'
   ]
 
   User.$privateScope = [
