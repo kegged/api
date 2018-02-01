@@ -134,5 +134,5 @@ PostController.updatePostSchema = _joi2.default.object().keys({
   breweryId: _joi2.default.number()
 });
 PostController.singleBrewerySortGraph = [[{ model: _models2.default.Comment, as: 'comments' }, 'createdAt', 'DESC']];
-PostController.singlePostEagerGraph = [{ model: _models2.default.Brewery, as: 'brewery' }, { model: _models2.default.PostTag, as: 'tags', include: [{ model: _models2.default.Tag, as: 'tag' }] }, { model: _models2.default.User, as: 'user', attributes: _models2.default.User.$publicScope }, { model: _models2.default.Comment, as: 'comments', include: [{ model: _models2.default.User, as: 'user', attributes: _models2.default.User.$publicScope }] }];
+PostController.singlePostEagerGraph = [{ model: _models2.default.Brewery, as: 'brewery', include: [{ model: _models2.default.City, as: 'city' }] }, { model: _models2.default.PostTag, as: 'tags', include: [{ model: _models2.default.Tag, as: 'tag' }] }, { model: _models2.default.User, as: 'user', attributes: _models2.default.User.$publicScope }, { model: _models2.default.Comment, as: 'comments', include: [{ model: _models2.default.User, as: 'user', attributes: _models2.default.User.$publicScope }] }];
 PostController.multiPostEagerGraph = [{ model: _models2.default.User, as: 'user', attributes: _models2.default.User.$publicScope }, { model: _models2.default.Brewery, as: 'brewery' }];

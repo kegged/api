@@ -24,7 +24,9 @@ export default class PostController {
   ]
 
   static singlePostEagerGraph = [
-    { model: models.Brewery, as: 'brewery' },
+    { model: models.Brewery, as: 'brewery', include: [
+      { model: models.City, as: 'city' }
+    ] },
     { model: models.PostTag, as: 'tags', include: [
       { model: models.Tag, as: 'tag' }
     ] },
